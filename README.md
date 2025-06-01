@@ -84,7 +84,7 @@ This uses the SDK image and runs migrations inside the Docker network, so the ba
 
 ```graphql
 query {
-  todoTasks {
+  allTasks {
     id
     title
     description
