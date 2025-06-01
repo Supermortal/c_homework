@@ -1,0 +1,23 @@
+### Get all tasks
+POST http://localhost:5000/graphql
+Content-Type: application/json
+
+{
+  "query": "query { getAllTasks { id title description status } }"
+}
+
+### Create a new task
+POST http://localhost:5000/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation { createTask(title: \"Test Task\", description: \"A test task\", status: \"Pending\") { id title description status } }"
+}
+
+### Update a task's status
+POST http://localhost:5000/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation { updateTaskStatus(id: \"<PUT_TASK_ID_HERE>\", status: \"Completed\") { id title description status } }"
+}
