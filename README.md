@@ -1,5 +1,7 @@
 # Todo Task Manager
 
+(Generated with Microsoft CoPilot)
+
 ## Overview
 The Todo Task Manager is a full-stack application that allows users to manage their tasks efficiently. It features a .NET Core backend that serves a GraphQL API and a React frontend that provides a user-friendly interface.
 

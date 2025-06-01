@@ -8,23 +8,22 @@ services:
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
-    healthcheck:
-      test: ["CMD", "sqlcmd", "-U", "sa", "-P", "Your_password123", "-Q", "select 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # healthcheck:
+    #   test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Your_password123 -Q "SELECT 1" || exit 1
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
 
   backend:
     build:
       context: ./backend
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=db;Database=TodoDb;User=sa;Password=Your_password123;
+      - ConnectionStrings__DefaultConnection=Server=db;Database=TodoDb;User=sa;Password=Your_password123;TrustServerCertificate=True;
     ports:
-      - "5000:80"
+      - "5000:8080"
     depends_on:
-      db:
-        condition: service_healthy
+      - db
 
   frontend:
     build:
@@ -40,3 +39,16 @@ services:
       - CHOKIDAR_USEPOLLING=true
     depends_on:
       - backend
+
+  migrate:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    working_dir: /src/TodoApi
+    volumes:
+      - ./backend:/src
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=TodoDb;User=sa;Password=Your_password123;TrustServerCertificate=True;
+    depends_on:
+      - db
+    entrypoint: >
+      /bin/sh -c "dotnet tool install --global dotnet-ef &&
+                  /root/.dotnet/tools/dotnet-ef database update"
