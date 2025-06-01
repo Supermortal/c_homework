@@ -1,6 +1,6 @@
 namespace TodoApi.Models
 {
-    public class Task
+    public class TodoTask
     {
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;

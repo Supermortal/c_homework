@@ -4,13 +4,13 @@ namespace TodoApi.Models
 {
     public class TaskRepository
     {
-        private readonly ConcurrentDictionary<Guid, Task> _tasks = new();
+        private readonly ConcurrentDictionary<Guid, TodoTask> _tasks = new();
 
-        public IEnumerable<Task> GetAll() => _tasks.Values;
+        public IEnumerable<TodoTask> GetAll() => _tasks.Values;
 
-        public Task Add(string title, string? description, string status)
+        public TodoTask Add(string title, string? description, string status)
         {
-            var task = new Task
+            var task = new TodoTask
             {
                 Id = Guid.NewGuid(),
                 Title = title,
@@ -21,7 +21,7 @@ namespace TodoApi.Models
             return task;
         }
 
-        public Task? UpdateStatus(Guid id, string status)
+        public TodoTask? UpdateStatus(Guid id, string status)
         {
             if (_tasks.TryGetValue(id, out var task))
             {

@@ -1,12 +1,12 @@
 using HotChocolate;
 using TodoApi.Models;
-using Task = TodoApi.Models.Task;
+using TodoTask = TodoApi.Models.TodoTask;
 
 namespace TodoApi.GraphQL
 {
     public class Mutation
     {
-        public Task CreateTask(
+        public TodoTask CreateTask(
             string title,
             string? description,
             string status,
@@ -15,7 +15,7 @@ namespace TodoApi.GraphQL
             return repository.Add(title, description, status);
         }
 
-        public Task? UpdateTaskStatus(
+        public TodoTask? UpdateTaskStatus(
             Guid id,
             string status,
             [Service] TaskRepository repository)

@@ -1,12 +1,12 @@
 using HotChocolate;
 using TodoApi.Models;
-using Task = TodoApi.Models.Task;
+using TodoTask = TodoApi.Models.TodoTask;
 
 namespace TodoApi.GraphQL
 {
     public class Query
     {
-        public IEnumerable<Task> GetAllTasks([Service] TaskRepository repository) =>
+        public IEnumerable<TodoTask> GetAllTasks([Service] TaskRepository repository) =>
             repository.GetAll();
     }
 }
