@@ -1,26 +1,37 @@
-using HotChocolate;
 using TodoApi.Models;
-using TodoTask = TodoApi.Models.TodoTask;
 
 namespace TodoApi.GraphQL
 {
     public class Mutation
     {
-        public TodoTask CreateTask(
+        public async Task<TodoTask> CreateTask(
             string title,
             string? description,
             string status,
-            [Service] TaskRepository repository)
+            [Service] TodoDbContext db)
         {
-            return repository.Add(title, description, status);
+            var task = new TodoTask
+            {
+                Id = Guid.NewGuid(),
+                Title = title,
+                Description = description,
+                Status = status
+            };
+            db.Tasks.Add(task);
+            await db.SaveChangesAsync();
+            return task;
         }
 
-        public TodoTask? UpdateTaskStatus(
+        public async Task<TodoTask?> UpdateTaskStatus(
             Guid id,
             string status,
-            [Service] TaskRepository repository)
+            [Service] TodoDbContext db)
         {
-            return repository.UpdateStatus(id, status);
+            var task = await db.Tasks.FindAsync(id);
+            if (task == null) return null;
+            task.Status = status;
+            await db.SaveChangesAsync();
+            return task;
         }
     }
 }

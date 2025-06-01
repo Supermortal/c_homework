@@ -1,26 +1,42 @@
 version: '3.8'
 
 services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: ["CMD", "sqlcmd", "-U", "sa", "-P", "Your_password123", "-Q", "select 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
-    image: todo-task-manager-backend
     build:
-      context: ./backend/TodoApi
-      dockerfile: Dockerfile
+      context: ./backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=TodoDb;User=sa;Password=Your_password123;
     ports:
       - "5000:80"
-    networks:
-      - todo-network
+    depends_on:
+      db:
+        condition: service_healthy
 
   frontend:
-    image: todo-task-manager-frontend
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+    working_dir: /app
+    command: npm start
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
-    networks:
-      - todo-network
-
-networks:
-  todo-network:
-    driver: bridge
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
